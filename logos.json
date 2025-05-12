@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-03-19",
+  "airlines": [
+    {
+      "name": "Air India",
+      "iata": "AI",
+      "icao": "AIC",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/air-india.svg",
+      "country": "India",
+      "alliance": "Star Alliance"
+    },
+    {
+      "name": "Lufthansa",
+      "iata": "LH",
+      "icao": "DLH",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/lufthansa.svg",
+      "country": "Germany",
+      "alliance": "Star Alliance"
+    },
+    {
+      "name": "Emirates",
+      "iata": "EK",
+      "icao": "UAE",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/emirates.svg",
+      "country": "United Arab Emirates",
+      "alliance": null
+    },
+    {
+      "name": "Singapore Airlines",
+      "iata": "SQ",
+      "icao": "SIA",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/singapore-airlines.svg",
+      "country": "Singapore",
+      "alliance": "Star Alliance"
+    },
+    {
+      "name": "Qatar Airways",
+      "iata": "QR",
+      "icao": "QTR",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/qatar-airways.svg",
+      "country": "Qatar",
+      "alliance": "Oneworld"
+    },
+    {
+      "name": "British Airways",
+      "iata": "BA",
+      "icao": "BAW",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/british-airways.svg",
+      "country": "United Kingdom",
+      "alliance": "Oneworld"
+    },
+    {
+      "name": "United Airlines",
+      "iata": "UA",
+      "icao": "UAL",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/united-airlines.svg",
+      "country": "United States",
+      "alliance": "Star Alliance"
+    },
+    {
+      "name": "Delta Air Lines",
+      "iata": "DL",
+      "icao": "DAL",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/delta-airlines.svg",
+      "country": "United States",
+      "alliance": "SkyTeam"
+    },
+    {
+      "name": "Air France",
+      "iata": "AF",
+      "icao": "AFR",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/air-france.svg",
+      "country": "France",
+      "alliance": "SkyTeam"
+    },
+    {
+      "name": "Cathay Pacific",
+      "iata": "CX",
+      "icao": "CPA",
+      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/cathay-pacific.svg",
+      "country": "Hong Kong",
+      "alliance": "Oneworld"
+    }
+  ]
+} 
