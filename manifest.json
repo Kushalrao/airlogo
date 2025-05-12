@@ -1,6 +1,5 @@
 {
   "name": "Airlogo - Airline Logo Library",
-  "description": "Quickly access and insert airline logos into your Figma designs",
   "id": "1503782379756521404",
   "api": "1.0.0",
   "main": "code.js",
