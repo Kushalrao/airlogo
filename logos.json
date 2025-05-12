@@ -6,7 +6,7 @@
       "name": "Air India",
       "iata": "AI",
       "icao": "AIC",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/air-india.svg",
+      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-india.svg",
       "country": "India",
       "alliance": "Star Alliance"
     },
@@ -14,7 +14,7 @@
       "name": "Lufthansa",
       "iata": "LH",
       "icao": "DLH",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/lufthansa.svg",
+      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/lufthansa.svg",
       "country": "Germany",
       "alliance": "Star Alliance"
     },
@@ -22,7 +22,7 @@
       "name": "Emirates",
       "iata": "EK",
       "icao": "UAE",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/emirates.svg",
+      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/emirates.svg",
       "country": "United Arab Emirates",
       "alliance": null
     },
@@ -30,7 +30,7 @@
       "name": "Singapore Airlines",
       "iata": "SQ",
       "icao": "SIA",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/singapore-airlines.svg",
+      "logo": "",
       "country": "Singapore",
       "alliance": "Star Alliance"
     },
@@ -38,7 +38,7 @@
       "name": "Qatar Airways",
       "iata": "QR",
       "icao": "QTR",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/qatar-airways.svg",
+      "logo": "",
       "country": "Qatar",
       "alliance": "Oneworld"
     },
@@ -46,7 +46,7 @@
       "name": "British Airways",
       "iata": "BA",
       "icao": "BAW",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/british-airways.svg",
+      "logo": "",
       "country": "United Kingdom",
       "alliance": "Oneworld"
     },
@@ -54,7 +54,7 @@
       "name": "United Airlines",
       "iata": "UA",
       "icao": "UAL",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/united-airlines.svg",
+      "logo": "",
       "country": "United States",
       "alliance": "Star Alliance"
     },
@@ -62,7 +62,7 @@
       "name": "Delta Air Lines",
       "iata": "DL",
       "icao": "DAL",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/delta-airlines.svg",
+      "logo": "",
       "country": "United States",
       "alliance": "SkyTeam"
     },
@@ -70,7 +70,7 @@
       "name": "Air France",
       "iata": "AF",
       "icao": "AFR",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/air-france.svg",
+      "logo": "",
       "country": "France",
       "alliance": "SkyTeam"
     },
@@ -78,7 +78,7 @@
       "name": "Cathay Pacific",
       "iata": "CX",
       "icao": "CPA",
-      "logo": "https://raw.githubusercontent.com/airlogo/logos/main/cathay-pacific.svg",
+      "logo": "",
       "country": "Hong Kong",
       "alliance": "Oneworld"
     }
