@@ -38,47 +38,48 @@
     }
     .logo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
       padding: 8px 0;
     }
     .logo-item {
       border: 1px solid #e0e0e0;
-      border-radius: 6px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 12px 8px 8px 8px;
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+      background: #fff;
+      min-height: 120px;
     }
     .logo-item:hover {
       border-color: #18A0FB;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     .logo-item img {
-      width: 64px;
-      height: 64px;
+      width: 48px;
+      height: 48px;
       object-fit: contain;
       margin-bottom: 8px;
+      margin-top: 4px;
     }
     .logo-item .airline-name {
-      font-size: 12px;
+      font-size: 13px;
       color: #333;
-      margin: 4px 0;
+      margin: 2px 0 0 0;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90px;
     }
     .logo-item .iata-code {
       font-size: 11px;
-      color: #666;
-      margin-bottom: 4px;
-    }
-    .logo-item .alliance {
-      font-size: 10px;
       color: #888;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #f5f5f5;
+      margin-bottom: 0;
     }
     .loading {
       text-align: center;
@@ -201,7 +202,6 @@
           <img src="${airline.logo}" alt="${airline.name}" />
           <div class="airline-name">${airline.name}</div>
           <div class="iata-code">${airline.iata}</div>
-          ${airline.alliance ? `<div class="alliance">${airline.alliance}</div>` : ''}
         `;
         logoElement.onclick = () => selectLogo(airline);
         logoGrid.appendChild(logoElement);
