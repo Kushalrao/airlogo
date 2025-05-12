@@ -133,7 +133,7 @@
     async function fetchLogos() {
       try {
         // TODO: Replace with actual CDN URL
-        const response = await fetch('https://raw.githubusercontent.com/airlogo/logos/main/logos.json');
+        const response = await fetch('https://raw.githubusercontent.com/Kushalrao/airlogo/main/logos.json');
         if (!response.ok) throw new Error('Failed to fetch logos');
         const data = await response.json();
         airlines = data.airlines;
