@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="200" height="200" fill="#F0F0F0"/>
-  
-  <!-- Lufthansa Circle -->
-  <circle cx="100" cy="100" r="80" fill="#F0F0F0" stroke="#D40511" stroke-width="4"/>
-  
-  <!-- Crane Symbol -->
-  <path d="M60 80 L100 40 L140 80 L100 120 Z" fill="#D40511"/>
-  
-  <!-- Text -->
-  <text x="100" y="170" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#000000" font-weight="bold">
-    LUFTHANSA
-  </text>
-</svg> 
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1955_6548)">
+<g clip-path="url(#clip1_1955_6548)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 -19H40V24.0354C38.3039 24.2781 37 25.7368 37 27.5C37 29.2632 38.3039 30.7219 40 30.9646V45H0V30.9646C1.69615 30.7219 3 29.2632 3 27.5C3 25.7368 1.69615 24.2781 0 24.0354V-19Z" fill="url(#paint0_linear_1955_6548)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 -19H40V24.0354C38.3039 24.2781 37 25.7368 37 27.5C37 29.2632 38.3039 30.7219 40 30.9646V45H0V30.9646C1.69615 30.7219 3 29.2632 3 27.5C3 25.7368 1.69615 24.2781 0 24.0354V-19Z" fill="url(#paint1_linear_1955_6548)"/>
+</g>
+<g clip-path="url(#clip2_1955_6548)">
+<path d="M17.1385 8C15.3806 8 15 8.32393 15 8.32393V10.859C15 10.859 15.3777 10.5888 16.5729 10.5888C17.8026 10.5888 18.9184 10.9307 20.0252 13.1594L21.4433 16.0149L19.7346 19.4091C19.3949 20.084 18.4994 21.3829 16.6404 21.3829C15.5107 21.3829 15 21.144 15 21.144V23.7057C15 23.7057 15.493 23.9907 17.2509 23.9907C19.8653 23.9907 21.3757 23.0569 22.8458 19.8188L24.5727 16.0149L22.8369 12.2109C22.1863 10.7853 21.6544 9.74851 20.4769 8.89568C19.5987 8.25961 18.5034 8 17.1385 8ZM29.8303 8.00283C29.0125 8.00283 28.1179 7.99463 27.1073 8.47039C26.0873 8.95055 25.0133 9.93088 24.0769 11.5217L25.4328 14.4857C26.6038 12.51 27.5734 10.5942 30.0746 10.5942C31.1108 10.5942 31.8321 10.8688 31.8321 10.8688V8.24385C31.8321 8.24385 31.0859 8.00283 29.8303 8.00283ZM25.4328 17.5173L24.0769 20.5527C25.0133 22.1435 26.0873 23.0524 27.1073 23.5326C28.1179 24.0084 29.0125 24 29.8303 24C31.0859 24 31.8321 23.7591 31.8321 23.7591V21.1342C31.8321 21.1342 31.1108 21.373 30.0746 21.373C27.3693 21.373 26.6038 19.493 25.4328 17.5173Z" fill="white"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_1955_6548" x1="20" y1="-19" x2="20" y2="45" gradientUnits="userSpaceOnUse">
+<stop offset="0.291049" stop-color="#D5164B"/>
+<stop offset="0.916632" stop-color="#951542"/>
+</linearGradient>
+<linearGradient id="paint1_linear_1955_6548" x1="20" y1="-19" x2="20" y2="45" gradientUnits="userSpaceOnUse">
+<stop offset="0.30139" stop-color="#FC7600"/>
+<stop offset="0.928576" stop-color="#F03622"/>
+</linearGradient>
+<clipPath id="clip0_1955_6548">
+<rect width="40" height="40" rx="8" fill="white"/>
+</clipPath>
+<clipPath id="clip1_1955_6548">
+<rect width="40" height="40" rx="4" fill="white"/>
+</clipPath>
+<clipPath id="clip2_1955_6548">
+<rect width="16.8321" height="16" fill="white" transform="translate(15 8)"/>
+</clipPath>
+</defs>
+</svg>
