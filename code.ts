@@ -18,13 +18,14 @@ interface LogoData {
 }
 
 interface PluginMessage {
-  type: 'insert-logo';
+  type: 'insert-logo' | 'drag-start';
   logo: LogoData;
+  closePlugin?: boolean;
+  x?: number;
+  y?: number;
 }
 
-// Calls to "parent.postMessage" from within the HTML page will trigger this
-// callback. The callback will be passed the "pluginMessage" property of the
-// posted message.
+// Handle messages from the UI
 figma.ui.onmessage = async (msg: PluginMessage) => {
   if (msg.type === 'insert-logo') {
     try {
@@ -36,10 +37,21 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
       // Create node from SVG
       const node = figma.createNodeFromSvg(svgString);
       
-      // Position the logo at the center of the viewport
-      const { x, y } = figma.viewport.center;
-      node.x = x - node.width / 2;
-      node.y = y - node.height / 2;
+      // Position the logo at the specified position or center of viewport
+      if (msg.x !== undefined && msg.y !== undefined) {
+        // Convert screen coordinates to Figma coordinates
+        const viewport = figma.viewport.center;
+        const zoom = figma.viewport.zoom;
+        const figmaX = (msg.x - figma.viewport.bounds.x) / zoom;
+        const figmaY = (msg.y - figma.viewport.bounds.y) / zoom;
+        
+        node.x = figmaX - node.width / 2;
+        node.y = figmaY - node.height / 2;
+      } else {
+        const { x, y } = figma.viewport.center;
+        node.x = x - node.width / 2;
+        node.y = y - node.height / 2;
+      }
 
       // Select the newly created node
       figma.currentPage.selection = [node];
@@ -47,13 +59,14 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
 
       // Notify user of success
       figma.notify(`Inserted ${msg.logo.name} logo`);
+
+      // Only close the plugin if explicitly requested
+      if (msg.closePlugin) {
+        figma.closePlugin();
+      }
     } catch (error) {
       console.error('Error inserting logo:', error);
       figma.notify('Failed to insert logo. Please try again.', { error: true });
     }
   }
-
-  // Make sure to close the plugin when you're done. Otherwise the plugin will
-  // keep running, which shows the cancel button at the bottom of the screen.
-  figma.closePlugin();
 };

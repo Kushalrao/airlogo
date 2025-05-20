@@ -3,7 +3,15 @@
   "lastUpdated": "2024-03-19",
   "airlines": [
     {
-      "name": "Air India",
+      "name": "Air India 20",
+      "iata": "AI",
+      "icao": "AIC",
+      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-india.svg",
+      "country": "India",
+      "alliance": "Star Alliance"
+    },
+    {
+      "name": "Air India 24",
       "iata": "AI",
       "icao": "AIC",
       "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-india.svg",

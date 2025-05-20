@@ -37,49 +37,51 @@
       cursor: pointer;
     }
     .logo-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       padding: 8px 0;
     }
     .logo-item {
       border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 12px 8px 8px 8px;
-      cursor: pointer;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: grab;
       transition: all 0.2s;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      text-align: center;
       background: #fff;
-      min-height: 120px;
+      min-height: 48px;
+      user-select: none;
     }
     .logo-item:hover {
-      border-color: #18A0FB;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
+    .logo-item:active {
+      cursor: grabbing;
+    }
     .logo-item img {
-      width: 48px;
-      height: 48px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
-      margin-bottom: 8px;
-      margin-top: 4px;
+      margin-right: 12px;
+    }
+    .logo-item .airline-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
     .logo-item .airline-name {
-      font-size: 13px;
+      font-size: 14px;
       color: #333;
-      margin: 2px 0 0 0;
+      margin: 0;
       font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 90px;
     }
     .logo-item .iata-code {
-      font-size: 11px;
+      font-size: 12px;
       color: #888;
-      margin-bottom: 0;
+      margin: 0;
     }
     .loading {
       text-align: center;
@@ -198,12 +200,50 @@
       airlinesToRender.forEach(airline => {
         const logoElement = document.createElement('div');
         logoElement.className = 'logo-item';
+        logoElement.draggable = true;
         logoElement.innerHTML = `
           <img src="${airline.logo}" alt="${airline.name}" />
-          <div class="airline-name">${airline.name}</div>
-          <div class="iata-code">${airline.iata}</div>
+          <div class="airline-info">
+            <div class="airline-name">${airline.name}</div>
+            <div class="iata-code">${airline.iata}</div>
+          </div>
         `;
+
+        // Click handler
         logoElement.onclick = () => selectLogo(airline);
+
+        // Drag handlers
+        logoElement.addEventListener('dragstart', (e) => {
+          // Store the airline data for the drag operation
+          e.dataTransfer.setData('application/json', JSON.stringify(airline));
+          e.dataTransfer.effectAllowed = 'copy';
+          
+          // Notify Figma that we're starting a drag operation
+          parent.postMessage({
+            pluginMessage: {
+              type: 'drag-start',
+              logo: airline
+            }
+          }, '*');
+        });
+
+        logoElement.addEventListener('dragend', (e) => {
+          // Get the drop coordinates from Figma
+          const dropX = e.clientX;
+          const dropY = e.clientY;
+          
+          // Convert screen coordinates to Figma coordinates
+          parent.postMessage({
+            pluginMessage: {
+              type: 'insert-logo',
+              logo: airline,
+              x: dropX,
+              y: dropY,
+              closePlugin: false
+            }
+          }, '*');
+        });
+
         logoGrid.appendChild(logoElement);
       });
     }
@@ -212,10 +252,25 @@
       parent.postMessage({ 
         pluginMessage: { 
           type: 'insert-logo',
-          logo: airline
+          logo: airline,
+          closePlugin: false
         }
       }, '*');
     }
+
+    // Add drag and drop message handler
+    window.addEventListener('message', (event) => {
+      const message = event.data.pluginMessage;
+      if (message && message.type === 'drop-logo') {
+        parent.postMessage({
+          pluginMessage: {
+            type: 'insert-logo',
+            logo: message.logo,
+            closePlugin: false
+          }
+        }, '*');
+      }
+    });
 
     // Event listeners
     searchInput.addEventListener('input', filterAirlines);
