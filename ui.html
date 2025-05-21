@@ -100,6 +100,53 @@
       color: #666;
       display: none;
     }
+    .airline-container {
+      margin-bottom: 8px;
+    }
+    .airline-main {
+      background: #f5f5f5;
+      cursor: pointer;
+    }
+    .airline-main:hover {
+      background: #e8e8e8;
+    }
+    .variant-count {
+      font-size: 12px;
+      color: #666;
+      padding: 2px 6px;
+      background: #e0e0e0;
+      border-radius: 4px;
+    }
+    .variants-list {
+      margin-top: 4px;
+      margin-left: 16px;
+      border-left: 2px solid #e0e0e0;
+      padding-left: 8px;
+    }
+    .variant-item {
+      margin-bottom: 4px;
+    }
+    .variant-size {
+      font-size: 11px;
+      color: #888;
+    }
+    .logo-error {
+      opacity: 0.5;
+    }
+    .airline-heading {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 16px 0 4px 0;
+      color: #222;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .airline-heading .iata-code {
+      font-size: 13px;
+      color: #888;
+      font-weight: 400;
+    }
   </style>
 </head>
 <body>
@@ -135,10 +182,11 @@
     // Fetch logos from CDN
     async function fetchLogos() {
       try {
-        // TODO: Replace with actual CDN URL
+        console.log('Fetching logos...');
         const response = await fetch('https://raw.githubusercontent.com/Kushalrao/airlogo/main/logos.json');
         if (!response.ok) throw new Error('Failed to fetch logos');
         const data = await response.json();
+        console.log('Fetched data:', data);
         airlines = data.airlines;
         
         // Populate country filter
@@ -152,8 +200,8 @@
 
         renderLogos(airlines);
       } catch (error) {
-        showError('Failed to load airline logos. Please try again later.');
         console.error('Error fetching logos:', error);
+        showError('Failed to load airline logos. Please try again later.');
       }
     }
 
@@ -180,7 +228,8 @@
       const filteredAirlines = airlines.filter(airline => {
         const matchesSearch = 
           airline.name.toLowerCase().includes(searchTerm) ||
-          airline.iata.toLowerCase().includes(searchTerm);
+          airline.iata.toLowerCase().includes(searchTerm) ||
+          airline.variants.some(variant => variant.name.toLowerCase().includes(searchTerm));
         const matchesAlliance = !allianceValue || airline.alliance === allianceValue;
         const matchesCountry = !countryValue || airline.country === countryValue;
         
@@ -198,57 +247,113 @@
     function renderLogos(airlinesToRender) {
       logoGrid.innerHTML = '';
       airlinesToRender.forEach(airline => {
-        const logoElement = document.createElement('div');
-        logoElement.className = 'logo-item';
-        logoElement.draggable = true;
-        logoElement.innerHTML = `
-          <img src="${airline.logo}" alt="${airline.name}" />
-          <div class="airline-info">
-            <div class="airline-name">${airline.name}</div>
-            <div class="iata-code">${airline.iata}</div>
-          </div>
-        `;
+        let variants = Array.isArray(airline.variants) ? airline.variants : [];
+        if (variants.length === 0 && airline.logo) {
+          variants = [{
+            name: airline.name,
+            size: 'default',
+            logo: airline.logo
+          }];
+        }
+        if (variants.length === 0) {
+          console.warn('Skipping airline with no variants or logo:', airline.name, airline);
+          return;
+        }
+        // Render airline heading
+        const airlineContainer = document.createElement('div');
+        airlineContainer.className = 'airline-container';
 
-        // Click handler
-        logoElement.onclick = () => selectLogo(airline);
+        // Subheading for airline name and code
+        const heading = document.createElement('div');
+        heading.className = 'airline-heading';
+        heading.innerHTML = `<span class="airline-name">${airline.name}</span> <span class="iata-code">(${airline.iata})</span>`;
+        airlineContainer.appendChild(heading);
 
-        // Drag handlers
-        logoElement.addEventListener('dragstart', (e) => {
-          // Store the airline data for the drag operation
-          e.dataTransfer.setData('application/json', JSON.stringify(airline));
-          e.dataTransfer.effectAllowed = 'copy';
-          
-          // Notify Figma that we're starting a drag operation
-          parent.postMessage({
-            pluginMessage: {
-              type: 'drag-start',
-              logo: airline
-            }
-          }, '*');
+        // List all variants directly
+        variants.forEach(variant => {
+          const variantItem = document.createElement('div');
+          variantItem.className = 'logo-item variant-item';
+          variantItem.draggable = true;
+
+          const img = new Image();
+          img.onerror = () => {
+            variantItem.classList.add('logo-error');
+            img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNGNUY1RjUiLz48cGF0aCBkPSJNMTYgMTZMMjQgMjRNMjQgMTZMMTYgMjQiIHN0cm9rZT0iI0Q5RDlEOSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=';
+          };
+          img.src = variant.logo;
+          img.alt = variant.name;
+          img.width = 32;
+          img.height = 32;
+
+          variantItem.innerHTML = `
+            <div class="airline-info">
+              <div class="airline-name">${variant.name}</div>
+              <div class="variant-size">${variant.size}</div>
+            </div>
+          `;
+          variantItem.insertBefore(img, variantItem.firstChild);
+
+          // Click handler for variant
+          variantItem.onclick = (e) => {
+            e.stopPropagation();
+            const logoData = {
+              name: variant.name,
+              iata: airline.iata,
+              logo: variant.logo,
+              size: variant.size
+            };
+            selectLogo(logoData);
+          };
+
+          // Drag handlers for variant
+          variantItem.addEventListener('dragstart', (e) => {
+            e.stopPropagation();
+            const logoData = {
+              name: variant.name,
+              iata: airline.iata,
+              logo: variant.logo,
+              size: variant.size
+            };
+            e.dataTransfer.setData('application/json', JSON.stringify(logoData));
+            e.dataTransfer.effectAllowed = 'copy';
+            parent.postMessage({
+              pluginMessage: {
+                type: 'drag-start',
+                logo: logoData
+              }
+            }, '*');
+          });
+
+          variantItem.addEventListener('dragend', (e) => {
+            e.stopPropagation();
+            const dropX = e.clientX;
+            const dropY = e.clientY;
+            const logoData = {
+              name: variant.name,
+              iata: airline.iata,
+              logo: variant.logo,
+              size: variant.size
+            };
+            parent.postMessage({
+              pluginMessage: {
+                type: 'insert-logo',
+                logo: logoData,
+                x: dropX,
+                y: dropY,
+                closePlugin: false
+              }
+            }, '*');
+          });
+
+          airlineContainer.appendChild(variantItem);
         });
 
-        logoElement.addEventListener('dragend', (e) => {
-          // Get the drop coordinates from Figma
-          const dropX = e.clientX;
-          const dropY = e.clientY;
-          
-          // Convert screen coordinates to Figma coordinates
-          parent.postMessage({
-            pluginMessage: {
-              type: 'insert-logo',
-              logo: airline,
-              x: dropX,
-              y: dropY,
-              closePlugin: false
-            }
-          }, '*');
-        });
-
-        logoGrid.appendChild(logoElement);
+        logoGrid.appendChild(airlineContainer);
       });
     }
 
     function selectLogo(airline) {
+      console.log('selectLogo called with:', airline);
       parent.postMessage({ 
         pluginMessage: { 
           type: 'insert-logo',
@@ -261,11 +366,16 @@
     // Add drag and drop message handler
     window.addEventListener('message', (event) => {
       const message = event.data.pluginMessage;
+      console.log('Received message:', message);
       if (message && message.type === 'drop-logo') {
+        console.log('Processing drop-logo message:', message);
         parent.postMessage({
           pluginMessage: {
             type: 'insert-logo',
-            logo: message.logo,
+            logo: {
+              ...message.logo,
+              size: message.logo.size
+            },
             closePlugin: false
           }
         }, '*');

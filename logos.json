@@ -1,94 +1,156 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2024-03-19",
+  "lastUpdated": "2024-03-20",
   "airlines": [
     {
-      "name": "Air India 20",
+      "name": "Air India",
       "iata": "AI",
       "icao": "AIC",
-      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-india.svg",
       "country": "India",
-      "alliance": "Star Alliance"
-    },
-    {
-      "name": "Air India 24",
-      "iata": "AI",
-      "icao": "AIC",
-      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-india.svg",
-      "country": "India",
-      "alliance": "Star Alliance"
+      "alliance": "Star Alliance",
+      "variants": [
+        {
+          "name": "Air India (20px)",
+          "size": "20px",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-india-20px.svg"
+        },
+        {
+          "name": "Air India (24px)",
+          "size": "24px",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-india-24px.svg"
+        }
+      ]
     },
     {
       "name": "Lufthansa",
       "iata": "LH",
       "icao": "DLH",
-      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/lufthansa.svg",
       "country": "Germany",
-      "alliance": "Star Alliance"
+      "alliance": "Star Alliance",
+      "variants": [
+        {
+          "name": "Lufthansa (20px)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/lufthansa.svg"
+        }, 
+        {
+          "name": "Lufthansa (24px)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/lufthansa.svg"
+        }
+      ]
     },
     {
       "name": "Emirates",
       "iata": "EK",
       "icao": "UAE",
-      "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/emirates.svg",
       "country": "United Arab Emirates",
-      "alliance": null
+      "alliance": null,
+      "variants": [
+        {
+          "name": "Emirates (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/emirates.svg"
+        }
+      ]
     },
     {
       "name": "Singapore Airlines",
       "iata": "SQ",
       "icao": "SIA",
-      "logo": "",
       "country": "Singapore",
-      "alliance": "Star Alliance"
+      "alliance": "Star Alliance",
+      "variants": [
+        {
+          "name": "Singapore Airlines (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/singapore-airlines.svg"
+        }
+      ]
     },
     {
       "name": "Qatar Airways",
       "iata": "QR",
       "icao": "QTR",
-      "logo": "",
       "country": "Qatar",
-      "alliance": "Oneworld"
+      "alliance": "Oneworld",
+      "variants": [
+        {
+          "name": "Qatar Airways (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/qatar-airways.svg"
+        }
+      ]
     },
     {
       "name": "British Airways",
       "iata": "BA",
       "icao": "BAW",
-      "logo": "",
       "country": "United Kingdom",
-      "alliance": "Oneworld"
+      "alliance": "Oneworld",
+      "variants": [
+        {
+          "name": "British Airways (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/british-airways.svg"
+        }
+      ]
     },
     {
       "name": "United Airlines",
       "iata": "UA",
       "icao": "UAL",
-      "logo": "",
       "country": "United States",
-      "alliance": "Star Alliance"
+      "alliance": "Star Alliance",
+      "variants": [
+        {
+          "name": "United Airlines (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/united-airlines.svg"
+        }
+      ]
     },
     {
       "name": "Delta Air Lines",
       "iata": "DL",
       "icao": "DAL",
-      "logo": "",
       "country": "United States",
-      "alliance": "SkyTeam"
+      "alliance": "SkyTeam",
+      "variants": [
+        {
+          "name": "Delta Air Lines (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/delta-airlines.svg"
+        }
+      ]
     },
     {
       "name": "Air France",
       "iata": "AF",
       "icao": "AFR",
-      "logo": "",
       "country": "France",
-      "alliance": "SkyTeam"
+      "alliance": "SkyTeam",
+      "variants": [
+        {
+          "name": "Air France (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/air-france.svg"
+        }
+      ]
     },
     {
       "name": "Cathay Pacific",
       "iata": "CX",
       "icao": "CPA",
-      "logo": "",
       "country": "Hong Kong",
-      "alliance": "Oneworld"
+      "alliance": "Oneworld",
+      "variants": [
+        {
+          "name": "Cathay Pacific (Default)",
+          "size": "default",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/cathay-pacific.svg"
+        }
+      ]
     }
   ]
 } 
