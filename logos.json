@@ -151,6 +151,20 @@
           "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/cathay-pacific.svg"
         }
       ]
+    },
+    {
+      "name": "Alliance Air",
+      "iata": "9I",
+      "icao": "LLR",
+      "country": "Hong Kong",
+      "alliance": "Alliance",
+      "variants": [
+        {
+          "name": "Alliance Air",
+          "size": "24",
+          "logo": "https://raw.githubusercontent.com/Kushalrao/airlogo/main/assets/logos/alliance-air.svg"
+        }
+      ]
     }
   ]
 } 
