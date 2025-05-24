@@ -8,6 +8,35 @@
       padding: 16px;
       color: #333;
     }
+    .tabs-container {
+      width: 100%;
+      display: flex;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 16px;
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid #000;
+      background: white;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: #000;
+      color: white;
+    }
+    .tab:first-child {
+      border-right: none;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+    .tab:last-child {
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
     .search-container {
       position: sticky;
       top: 0;
@@ -147,248 +176,457 @@
       color: #888;
       font-weight: 400;
     }
+    #colors-section .search-container {
+      margin-bottom: 16px;
+      position: static;
+      padding: 0;
+    }
+    #color-search {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .airline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .airline-item {
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .airline-item:hover {
+      background: #f5f5f5;
+    }
+    .airline-item.selected {
+      background: #f0f0f0;
+      border-color: #000;
+    }
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+      padding: 16px;
+      background: #f5f5f5;
+      border-radius: 6px;
+    }
+    .color-rectangle {
+      width: 48px;
+      height: 48px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
-  <div class="search-container">
-    <input type="text" id="search" placeholder="Search airlines by name or IATA code..." />
-    <div class="filters">
-      <select id="alliance-filter">
-        <option value="">All Alliances</option>
-        <option value="Star Alliance">Star Alliance</option>
-        <option value="Oneworld">Oneworld</option>
-        <option value="SkyTeam">SkyTeam</option>
-      </select>
-      <select id="country-filter">
-        <option value="">All Countries</option>
-      </select>
+  <div class="tabs-container">
+    <div class="tab active" data-tab="logo">Logo</div>
+    <div class="tab" data-tab="colors">Colors</div>
+  </div>
+  <div id="logo-section">
+    <div class="search-container">
+      <input type="text" id="search" placeholder="Search airlines by name or IATA code..." />
+      <div class="filters">
+        <select id="alliance-filter">
+          <option value="">All Alliances</option>
+          <option value="Star Alliance">Star Alliance</option>
+          <option value="Oneworld">Oneworld</option>
+          <option value="SkyTeam">SkyTeam</option>
+        </select>
+        <select id="country-filter">
+          <option value="">All Countries</option>
+        </select>
+      </div>
+    </div>
+    <div id="error" class="error"></div>
+    <div id="no-results" class="no-results">No airlines found matching your search criteria.</div>
+    <div id="logo-grid" class="logo-grid">
+      <div class="loading">Loading airline logos...</div>
     </div>
   </div>
-  <div id="error" class="error"></div>
-  <div id="no-results" class="no-results">No airlines found matching your search criteria.</div>
-  <div id="logo-grid" class="logo-grid">
-    <div class="loading">Loading airline logos...</div>
+  <div id="colors-section" style="display:none;">
+    <div class="search-container">
+      <input type="text" id="color-search" placeholder="Search airlines by name or IATA code..." />
+    </div>
+    <div class="airline-list" id="airline-list">
+      <!-- Airline items will be populated here -->
+    </div>
   </div>
-
-  <script>
-    let airlines = [];
-    const searchInput = document.getElementById('search');
-    const allianceFilter = document.getElementById('alliance-filter');
-    const countryFilter = document.getElementById('country-filter');
-    const logoGrid = document.getElementById('logo-grid');
-    const errorDiv = document.getElementById('error');
-    const noResultsDiv = document.getElementById('no-results');
-
-    // Fetch logos from CDN
-    async function fetchLogos() {
-      try {
-        console.log('Fetching logos...');
-        const response = await fetch('https://raw.githubusercontent.com/Kushalrao/airlogo/main/logos.json');
-        if (!response.ok) throw new Error('Failed to fetch logos');
-        const data = await response.json();
-        console.log('Fetched data:', data);
-        airlines = data.airlines;
-        
-        // Populate country filter
-        const countries = [...new Set(airlines.map(airline => airline.country))].sort();
-        countries.forEach(country => {
-          const option = document.createElement('option');
-          option.value = country;
-          option.textContent = country;
-          countryFilter.appendChild(option);
-        });
-
-        renderLogos(airlines);
-      } catch (error) {
-        console.error('Error fetching logos:', error);
-        showError('Failed to load airline logos. Please try again later.');
+<script>
+// Tab switching logic
+const tabs = document.querySelectorAll('.tab');
+const logoSection = document.getElementById('logo-section');
+const colorsSection = document.getElementById('colors-section');
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    if (tab.dataset.tab === 'colors') {
+      logoSection.style.display = 'none';
+      colorsSection.style.display = 'block';
+      if (!window.colorsInitialized) {
+        initColorsTab();
+        window.colorsInitialized = true;
       }
+    } else {
+      logoSection.style.display = 'block';
+      colorsSection.style.display = 'none';
     }
+  });
+});
 
-    function showError(message) {
-      errorDiv.textContent = message;
+// ------------------- LOGO TAB LOGIC (modular) -------------------
+(function initLogoTab() {
+  let airlines = [];
+  const searchInput = document.getElementById('search');
+  const allianceFilter = document.getElementById('alliance-filter');
+  const countryFilter = document.getElementById('country-filter');
+  const logoGrid = document.getElementById('logo-grid');
+  const errorDiv = document.getElementById('error');
+  const noResultsDiv = document.getElementById('no-results');
+
+  async function fetchLogos() {
+    try {
+      const response = await fetch('https://raw.githubusercontent.com/Kushalrao/airlogo/main/logos.json');
+      if (!response.ok) throw new Error('Failed to fetch logos');
+      const data = await response.json();
+      airlines = data.airlines;
+      const countries = [...new Set(airlines.map(airline => airline.country))].sort();
+      countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country;
+        option.textContent = country;
+        countryFilter.appendChild(option);
+      });
+      renderLogos(airlines);
+    } catch (error) {
+      errorDiv.textContent = 'Failed to load airline logos. Please try again later.';
       errorDiv.style.display = 'block';
       logoGrid.innerHTML = '';
     }
-
-    function showNoResults() {
-      noResultsDiv.style.display = 'block';
-      logoGrid.innerHTML = '';
+  }
+  function showNoResults() {
+    noResultsDiv.style.display = 'block';
+    logoGrid.innerHTML = '';
+  }
+  function hideNoResults() {
+    noResultsDiv.style.display = 'none';
+  }
+  function filterAirlines() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const allianceValue = allianceFilter.value;
+    const countryValue = countryFilter.value;
+    const filteredAirlines = airlines.filter(airline => {
+      const matchesSearch = 
+        airline.name.toLowerCase().includes(searchTerm) ||
+        airline.iata.toLowerCase().includes(searchTerm) ||
+        airline.variants.some(variant => variant.name.toLowerCase().includes(searchTerm));
+      const matchesAlliance = !allianceValue || airline.alliance === allianceValue;
+      const matchesCountry = !countryValue || airline.country === countryValue;
+      return matchesSearch && matchesAlliance && matchesCountry;
+    });
+    if (filteredAirlines.length === 0) {
+      showNoResults();
+    } else {
+      hideNoResults();
+      renderLogos(filteredAirlines);
     }
-
-    function hideNoResults() {
-      noResultsDiv.style.display = 'none';
-    }
-
-    function filterAirlines() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const allianceValue = allianceFilter.value;
-      const countryValue = countryFilter.value;
-
-      const filteredAirlines = airlines.filter(airline => {
-        const matchesSearch = 
-          airline.name.toLowerCase().includes(searchTerm) ||
-          airline.iata.toLowerCase().includes(searchTerm) ||
-          airline.variants.some(variant => variant.name.toLowerCase().includes(searchTerm));
-        const matchesAlliance = !allianceValue || airline.alliance === allianceValue;
-        const matchesCountry = !countryValue || airline.country === countryValue;
-        
-        return matchesSearch && matchesAlliance && matchesCountry;
-      });
-
-      if (filteredAirlines.length === 0) {
-        showNoResults();
-      } else {
-        hideNoResults();
-        renderLogos(filteredAirlines);
+  }
+  function renderLogos(airlinesToRender) {
+    logoGrid.innerHTML = '';
+    airlinesToRender.forEach(airline => {
+      let variants = Array.isArray(airline.variants) ? airline.variants : [];
+      if (variants.length === 0 && airline.logo) {
+        variants = [{
+          name: airline.name,
+          size: 'default',
+          logo: airline.logo
+        }];
       }
-    }
-
-    function renderLogos(airlinesToRender) {
-      logoGrid.innerHTML = '';
-      airlinesToRender.forEach(airline => {
-        let variants = Array.isArray(airline.variants) ? airline.variants : [];
-        if (variants.length === 0 && airline.logo) {
-          variants = [{
-            name: airline.name,
-            size: 'default',
-            logo: airline.logo
-          }];
-        }
-        if (variants.length === 0) {
-          console.warn('Skipping airline with no variants or logo:', airline.name, airline);
-          return;
-        }
-        // Render airline heading
-        const airlineContainer = document.createElement('div');
-        airlineContainer.className = 'airline-container';
-
-        // Subheading for airline name and code
-        const heading = document.createElement('div');
-        heading.className = 'airline-heading';
-        heading.innerHTML = `<span class="airline-name">${airline.name}</span> <span class="iata-code">(${airline.iata})</span>`;
-        airlineContainer.appendChild(heading);
-
-        // List all variants directly
-        variants.forEach(variant => {
-          const variantItem = document.createElement('div');
-          variantItem.className = 'logo-item variant-item';
-          variantItem.draggable = true;
-
-          const img = new Image();
-          img.onerror = () => {
-            variantItem.classList.add('logo-error');
-            img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNGNUY1RjUiLz48cGF0aCBkPSJNMTYgMTZMMjQgMjRNMjQgMTZMMTYgMjQiIHN0cm9rZT0iI0Q5RDlEOSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=';
+      if (variants.length === 0) return;
+      const airlineContainer = document.createElement('div');
+      airlineContainer.className = 'airline-container';
+      const heading = document.createElement('div');
+      heading.className = 'airline-heading';
+      heading.innerHTML = `<span class="airline-name">${airline.name}</span> <span class="iata-code">(${airline.iata})</span>`;
+      airlineContainer.appendChild(heading);
+      variants.forEach(variant => {
+        const variantItem = document.createElement('div');
+        variantItem.className = 'logo-item variant-item';
+        variantItem.draggable = true;
+        const img = new Image();
+        img.onerror = () => {
+          variantItem.classList.add('logo-error');
+          img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNGNUY1RjUiLz48cGF0aCBkPSJNMTYgMTZMMjQgMjRNMjQgMTZMMTYgMjQiIHN0cm9rZT0iI0Q5RDlEOSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=';
+        };
+        img.src = variant.logo;
+        img.alt = variant.name;
+        img.width = 32;
+        img.height = 32;
+        variantItem.innerHTML = `
+          <div class="airline-info">
+            <div class="airline-name">${variant.name}</div>
+            <div class="variant-size">${variant.size}</div>
+          </div>
+        `;
+        variantItem.insertBefore(img, variantItem.firstChild);
+        variantItem.onclick = (e) => {
+          e.stopPropagation();
+          const logoData = {
+            name: variant.name,
+            iata: airline.iata,
+            logo: variant.logo,
+            size: variant.size
           };
-          img.src = variant.logo;
-          img.alt = variant.name;
-          img.width = 32;
-          img.height = 32;
-
-          variantItem.innerHTML = `
-            <div class="airline-info">
-              <div class="airline-name">${variant.name}</div>
-              <div class="variant-size">${variant.size}</div>
-            </div>
-          `;
-          variantItem.insertBefore(img, variantItem.firstChild);
-
-          // Click handler for variant
-          variantItem.onclick = (e) => {
-            e.stopPropagation();
-            const logoData = {
-              name: variant.name,
-              iata: airline.iata,
-              logo: variant.logo,
-              size: variant.size
-            };
-            selectLogo(logoData);
+          selectLogo(logoData);
+        };
+        variantItem.addEventListener('dragstart', (e) => {
+          e.stopPropagation();
+          const logoData = {
+            name: variant.name,
+            iata: airline.iata,
+            logo: variant.logo,
+            size: variant.size
           };
-
-          // Drag handlers for variant
-          variantItem.addEventListener('dragstart', (e) => {
-            e.stopPropagation();
-            const logoData = {
-              name: variant.name,
-              iata: airline.iata,
-              logo: variant.logo,
-              size: variant.size
-            };
-            e.dataTransfer.setData('application/json', JSON.stringify(logoData));
-            e.dataTransfer.effectAllowed = 'copy';
-            parent.postMessage({
-              pluginMessage: {
-                type: 'drag-start',
-                logo: logoData
-              }
-            }, '*');
-          });
-
-          variantItem.addEventListener('dragend', (e) => {
-            e.stopPropagation();
-            const dropX = e.clientX;
-            const dropY = e.clientY;
-            const logoData = {
-              name: variant.name,
-              iata: airline.iata,
-              logo: variant.logo,
-              size: variant.size
-            };
-            parent.postMessage({
-              pluginMessage: {
-                type: 'insert-logo',
-                logo: logoData,
-                x: dropX,
-                y: dropY,
-                closePlugin: false
-              }
-            }, '*');
-          });
-
-          airlineContainer.appendChild(variantItem);
+          e.dataTransfer.setData('application/json', JSON.stringify(logoData));
+          e.dataTransfer.effectAllowed = 'copy';
+          parent.postMessage({
+            pluginMessage: {
+              type: 'drag-start',
+              logo: logoData
+            }
+          }, '*');
         });
-
-        logoGrid.appendChild(airlineContainer);
+        variantItem.addEventListener('dragend', (e) => {
+          e.stopPropagation();
+          const dropX = e.clientX;
+          const dropY = e.clientY;
+          const logoData = {
+            name: variant.name,
+            iata: airline.iata,
+            logo: variant.logo,
+            size: variant.size
+          };
+          parent.postMessage({
+            pluginMessage: {
+              type: 'insert-logo',
+              logo: logoData,
+              x: dropX,
+              y: dropY,
+              closePlugin: false
+            }
+          }, '*');
+        });
+        airlineContainer.appendChild(variantItem);
       });
-    }
-
-    function selectLogo(airline) {
-      console.log('selectLogo called with:', airline);
-      parent.postMessage({ 
-        pluginMessage: { 
+      logoGrid.appendChild(airlineContainer);
+    });
+  }
+  function selectLogo(airline) {
+    parent.postMessage({ 
+      pluginMessage: { 
+        type: 'insert-logo',
+        logo: airline,
+        closePlugin: false
+      }
+    }, '*');
+  }
+  window.addEventListener('message', (event) => {
+    const message = event.data.pluginMessage;
+    if (message && message.type === 'drop-logo') {
+      parent.postMessage({
+        pluginMessage: {
           type: 'insert-logo',
-          logo: airline,
+          logo: {
+            ...message.logo,
+            size: message.logo.size
+          },
           closePlugin: false
         }
       }, '*');
     }
+  });
+  searchInput.addEventListener('input', filterAirlines);
+  allianceFilter.addEventListener('change', filterAirlines);
+  countryFilter.addEventListener('change', filterAirlines);
+  fetchLogos();
+})();
 
-    // Add drag and drop message handler
-    window.addEventListener('message', (event) => {
-      const message = event.data.pluginMessage;
-      console.log('Received message:', message);
-      if (message && message.type === 'drop-logo') {
-        console.log('Processing drop-logo message:', message);
-        parent.postMessage({
-          pluginMessage: {
-            type: 'insert-logo',
-            logo: {
-              ...message.logo,
-              size: message.logo.size
-            },
-            closePlugin: false
+// ------------------- COLORS TAB LOGIC (modular) -------------------
+// Inline airline color data for reliability in plugin environment
+window.colorAirlinesData = [
+  {
+    "name": "American Airlines",
+    "iata": "AA",
+    "colors": {
+      "solid": ["#002366", "#EF3340"],
+      "gradients": [
+        {
+          "type": "linear",
+          "angle": 90,
+          "stops": [
+            {"color": "#002366", "position": 0},
+            {"color": "#EF3340", "position": 1}
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Air India",
+    "iata": "AI",
+    "colors": {
+      "solid": ["#D4174C", "#961643", "#FED9A0", "#A17C4A"],
+      "gradients": [
+        {
+          "type": "linear",
+          "angle": 180,
+          "stops": [
+            {"color": "#D4174C", "position": 0},
+            {"color": "#961643", "position": 1}
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Air India Express",
+    "iata": "IX",
+    "colors": {
+      "solid": ["#FC7702", "#F13723"],
+      "gradients": [
+        {
+          "type": "linear",
+          "angle": 180,
+          "stops": [
+            {"color": "#FC7702", "position": 0},
+            {"color": "#F13723", "position": 1}
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Emirates",
+    "iata": "EK",
+    "colors": {
+      "solid": ["#D71B21"],
+      "gradients": [
+      ]
+    }
+  },
+  {
+    "name": "Indigo",
+    "iata": "6E",
+    "colors": {
+      "solid": ["#000099", "#008001", "#FFFFFF"],
+      "gradients": [
+      ]
+    }
+  },
+  {
+    "name": "NoColor Airline",
+    "iata": "NC",
+    "colors": {
+      "solid": [],
+      "gradients": []
+    }
+  },
+  {
+    "name": "SolidOnly Airline",
+    "iata": "SO",
+    "colors": {
+      "solid": ["#123456"],
+      "gradients": []
+    }
+  },
+  {
+    "name": "GradientOnly Airline",
+    "iata": "GO",
+    "colors": {
+      "solid": [],
+      "gradients": [
+        {
+          "type": "linear",
+          "angle": 90,
+          "stops": [
+            {"color": "#123456", "position": 0},
+            {"color": "#abcdef", "position": 1}
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "MissingColors Airline",
+    "iata": "MC"
+    // No 'colors' property at all
+  }
+];
+
+function initColorsTab() {
+  const colorSearch = document.getElementById('color-search');
+  const airlineList = document.getElementById('airline-list');
+  let colorAirlines = window.colorAirlinesData;
+
+  function renderAirlineList(list) {
+    airlineList.innerHTML = list.map(airline => `
+      <div class="airline-item" data-iata="${airline.iata}">
+        <div class="airline-name">${airline.name}</div>
+        <div class="iata-code">${airline.iata}</div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.airline-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const iata = item.dataset.iata;
+        const airline = colorAirlines.find(a => a.iata === iata);
+        if (airline) {
+          const solidColors = Array.isArray(airline.colors?.solid) ? airline.colors.solid : [];
+          const gradientColors = Array.isArray(airline.colors?.gradients) ? (airline.colors.gradients.map(gradient =>
+            `linear-gradient(${gradient.angle}deg, ${gradient.stops.map(stop => `${stop.color} ${stop.position * 100}%`).join(', ')})`
+          )) : [];
+          const allColors = [...solidColors, ...gradientColors];
+          if (allColors.length === 0) {
+            // Show a message if no colors are available
+            airlineList.insertAdjacentHTML('afterend', `<div id="no-colors-msg" style="color:#888;padding:16px;text-align:center;">No colors available for this airline.</div>`);
+            setTimeout(() => {
+              const msg = document.getElementById('no-colors-msg');
+              if (msg) msg.remove();
+            }, 2000);
+            return;
           }
-        }, '*');
-      }
+          // Remove any previous message
+          const prevMsg = document.getElementById('no-colors-msg');
+          if (prevMsg) prevMsg.remove();
+          // Send to plugin backend
+          parent.postMessage({
+            pluginMessage: {
+              type: 'create-color-rectangle',
+              colors: allColors
+            }
+          }, '*');
+        }
+      });
     });
+  }
 
-    // Event listeners
-    searchInput.addEventListener('input', filterAirlines);
-    allianceFilter.addEventListener('change', filterAirlines);
-    countryFilter.addEventListener('change', filterAirlines);
+  colorSearch.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredAirlines = colorAirlines.filter(airline => 
+      airline.name.toLowerCase().includes(searchTerm) || 
+      airline.iata.toLowerCase().includes(searchTerm)
+    );
+    renderAirlineList(filteredAirlines);
+  });
 
-    // Initial load
-    fetchLogos();
-  </script>
+  renderAirlineList(colorAirlines);
+}
+</script>
 </body>
 </html>
